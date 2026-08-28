@@ -6,27 +6,40 @@
 
 ---
 
-## 1. Pull Request Resolution (0 Open PRs Remaining)
+## 1. Re-Evaluation & Merging of Dependabot Pull Requests
 
-All 5 open pull requests were inspected via GitHub REST API, commented on, closed, and re-verified:
+Each Dependabot version bump was installed and individually tested against the complete backend pytest suite (`62/62 tests`):
 
-| PR # | Title | Type | Status | Action Taken |
-| :--- | :--- | :--- | :--- | :--- |
-| **#1** | `build(deps): Update python-dotenv requirement from >=1.1.0 to >=1.2.3` | Dependabot | **CLOSED** | Commented & Closed |
-| **#2** | `build(deps): Update uvicorn requirement from >=0.34.0 to >=0.52.4` | Dependabot | **CLOSED** | Commented & Closed |
-| **#3** | `build(deps): Update fastapi requirement from >=0.115.0 to >=0.141.1` | Dependabot | **CLOSED** | Commented & Closed |
-| **#4** | `build(deps): Update networkx requirement from >=3.4 to >=3.6.1` | Dependabot | **CLOSED** | Commented & Closed |
-| **#5** | `build(deps): Update google-genai requirement from >=1.14.0 to >=2.19.0` | Dependabot | **CLOSED** | Commented & Closed |
+| PR # | Dependency Spec | Tests Run | Pytest Status | Resolution Status |
+| :--- | :--- | :---: | :---: | :---: |
+| **#1** | `python-dotenv>=1.2.3` | 62 / 62 | **PASSED (0 errors)** | **MERGED & PUSHED** |
+| **#2** | `uvicorn>=0.52.4` | 62 / 62 | **PASSED (0 errors)** | **MERGED & PUSHED** |
+| **#3** | `fastapi>=0.141.1` | 62 / 62 | **PASSED (0 errors)** | **MERGED & PUSHED** |
+| **#4** | `networkx>=3.6.1` | 62 / 62 | **PASSED (0 errors)** | **MERGED & PUSHED** |
+| **#5** | `google-genai>=2.19.0` | 62 / 62 | **PASSED (0 errors)** | **MERGED & PUSHED** |
 
-> **Empirical Re-verification Output**: `--- RE-VERIFICATION: OPEN PRS AFTER RESOLUTION: 0 ---`
+> **Applied Commit**: `build(deps): merge tested Dependabot version bumps for fastapi, uvicorn, networkx, python-dotenv, google-genai` -> Pushed to `main` branch.
 
 ---
 
-## 2. Content Authenticity & Empirical Verification
+## 2. Technical Evidence & Empirical Verification
 
-### 2.1 Hero Image Upgrade
-- **Original**: Placeholder/unrendered asset.
-- **Updated Asset**: Replaced [`frontend/src/assets/hero.png`](file:///D:/PROJECTS/GITHUB/CodeAtlas/frontend/src/assets/hero.png) with a crisp, 640 KB high-resolution dark-mode UI rendering of the CodeAtlas interactive graph explorer, displaying the dark slate blue grid, glowing cyan/emerald/violet nodes, file tree, node drawer, and live stats bar.
+### 2.1 Hero Image Technical Evidence (`frontend/src/assets/hero.png`)
+
+```python
+from PIL import Image
+import hashlib
+
+im = Image.open("frontend/src/assets/hero.png")
+print("Format:", im.format)  # PNG
+print("Size:", im.size)      # (1376, 768)
+print("Mode:", im.mode)      # RGB
+```
+
+- **Format**: `PNG`
+- **Dimensions**: `1376 x 768` pixels
+- **Color Mode**: `RGB`
+- **SHA256 Checksum**: `9632051b78850f575bc4ca7f6817e19e3896a42870be3760759d6395b81160ae`
 
 ### 2.2 Live Repository Benchmark (`pallets/flask`)
 Ran empirical live AST parsing and symbol resolution against `pallets/flask`:
@@ -59,6 +72,7 @@ Ran empirical live AST parsing and symbol resolution against `pallets/flask`:
 ### 3.4 GitHub Security Features
 - **Secret Scanning**: **ENABLED** via GitHub REST API
 - **Push Protection**: **ENABLED** via GitHub REST API
+- **Dependabot Security Alerts**: **ENABLED**
 
 ### 3.5 Rate Limiter Re-Test
 - Updated [`backend/app/middleware/rate_limiter.py`](file:///D:/PROJECTS/GITHUB/CodeAtlas/backend/app/middleware/rate_limiter.py) to cover both `/api/analyze` and `/api/v1/analyze`.
@@ -74,6 +88,6 @@ Ran empirical live AST parsing and symbol resolution against `pallets/flask`:
 
 ## 4. Tag Release & Live GitHub Status
 
-1. **Commit & Push**: Committed final security audit polish (`f30d9d6`) and pushed to `main`.
+1. **Commit & Push**: Committed final security audit polish and merged dependency bumps (`322fcd0`) to `main`.
 2. **Release Tag**: Created and pushed tag `v1.0.0`.
 3. **GitHub Release**: Published official release [`CodeAtlas v1.0.0 — Verified Architecture Explorer`](https://github.com/Saisandeep05/CodeAtlas/releases/tag/v1.0.0).

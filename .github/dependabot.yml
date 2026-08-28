@@ -1,0 +1,18 @@
+# Dependabot configuration for automated dependency updates
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "backend"
+
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "frontend"

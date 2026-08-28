@@ -62,6 +62,47 @@ function App() {
               {analyzing ? 'Analyzing Architecture...' : 'Load Repository'}
             </button>
           </form>
+
+          {/* Quick-Select Sample Repositories for Demo Frictionless Testing */}
+          <div style={{ marginTop: '12px' }}>
+            <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-tertiary)', marginBottom: '6px' }}>
+              Quick Try Sample Repos:
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+              {[
+                { name: 'flask', url: 'https://github.com/pallets/flask' },
+                { name: 'requests', url: 'https://github.com/psf/requests' },
+                { name: 'fastapi', url: 'https://github.com/fastapi/fastapi' }
+              ].map(sample => (
+                <button
+                  key={sample.name}
+                  type="button"
+                  onClick={() => {
+                    setRepoUrl(sample.url);
+                    analyzeRepo(sample.url)
+                      .then(data => {
+                        setAnalysisResult(data);
+                        setError(null);
+                      })
+                      .catch(err => setError(err.response?.data?.detail || err.message));
+                  }}
+                  style={{
+                    background: 'rgba(56, 189, 248, 0.1)',
+                    border: '1px solid rgba(56, 189, 248, 0.25)',
+                    color: '#38bdf8',
+                    padding: '3px 8px',
+                    borderRadius: '12px',
+                    fontSize: '0.72rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  ⚡ {sample.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {error && <div style={{color: '#ef4444', fontSize: '0.85rem', marginTop: '8px', padding: '8px', background: 'rgba(239,68,68,0.1)', borderRadius: '4px'}}>{error}</div>}
         </div>
 

@@ -2,8 +2,10 @@ import os
 import shutil
 import tempfile
 import urllib.request
+import urllib.error
 import zipfile
 import json
+import logging
 import socket
 import re
 from typing import List, Optional, Tuple
@@ -17,6 +19,8 @@ from config import (
     CLONE_TIMEOUT_SECONDS,
     SKIP_DIRECTORIES,
 )
+
+logger = logging.getLogger("codeatlas")
 
 class RepositoryValidationError(Exception):
     """Raised when a repository fails validation checks."""
@@ -87,7 +91,7 @@ class GithubService:
                 if data and isinstance(data, list):
                     return data[0]['sha']
         except Exception as e:
-            print(f"Warning: Failed to fetch commit hash: {e}")
+            logger.warning(f"Failed to fetch commit hash: {e}")
         return "unknown_hash"
 
     def clone_repo(self, repo_url: str) -> Tuple[str, str]:
@@ -104,7 +108,7 @@ class GithubService:
         zip_url = f"https://github.com/{user}/{repo_name}/archive/refs/heads/main.zip"
         zip_path = os.path.join(self.temp_dir, f"{repo_name}_{commit_hash}.zip")
 
-        print(f"Downloading {zip_url} into {target_dir}...")
+        logger.info(f"Downloading {zip_url} into {target_dir}...")
         try:
             req = urllib.request.Request(zip_url, headers={'User-Agent': 'CodeAtlas'})
             with urllib.request.urlopen(req, timeout=CLONE_TIMEOUT_SECONDS) as response, open(zip_path, 'wb') as out_file:
@@ -171,7 +175,7 @@ class GithubService:
                     continue
 
                 if file_size > MAX_FILE_SIZE_BYTES:
-                    print(f"Skipping oversized file ({file_size} bytes): {file_path}")
+                    logger.warning(f"Skipping oversized file ({file_size} bytes): {file_path}")
                     continue
 
                 total_size += file_size

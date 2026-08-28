@@ -132,3 +132,60 @@ def test_case_13_syntax_error_file():
     assert len(parsed) == 1
     assert "error" in parsed[0]
     assert "Syntax error" in parsed[0]["error"]
+
+def test_case_14_diamond_inheritance():
+    """Tests resolution of methods across a diamond inheritance hierarchy: D -> (B, C) -> A."""
+    from app.services.symbol_index import SymbolIndex
+    from app.services.symbol_resolver import SymbolResolver
+
+    parsed_files = [
+        {
+            "file": "diamond.py",
+            "module": "diamond",
+            "classes": [
+                {"name": "A", "file": "diamond.py", "module": "diamond", "line": 1, "bases": [], "evidence": "class A:"},
+                {"name": "B", "file": "diamond.py", "module": "diamond", "line": 6, "bases": ["A"], "evidence": "class B(A):"},
+                {"name": "C", "file": "diamond.py", "module": "diamond", "line": 11, "bases": ["A"], "evidence": "class C(A):"},
+                {"name": "D", "file": "diamond.py", "module": "diamond", "line": 16, "bases": ["B", "C"], "evidence": "class D(B, C):"},
+            ],
+            "functions": [
+                {"name": "base_method", "file": "diamond.py", "module": "diamond", "line": 2, "parent_class": "A", "is_async": False, "is_property": False, "is_staticmethod": False, "evidence": "def base_method(self): pass"},
+                {"name": "b_method", "file": "diamond.py", "module": "diamond", "line": 7, "parent_class": "B", "is_async": False, "is_property": False, "is_staticmethod": False, "evidence": "def b_method(self): pass"},
+                {"name": "c_method", "file": "diamond.py", "module": "diamond", "line": 12, "parent_class": "C", "is_async": False, "is_property": False, "is_staticmethod": False, "evidence": "def c_method(self): pass"},
+                {"name": "d_method", "file": "diamond.py", "module": "diamond", "line": 17, "parent_class": "D", "is_async": False, "is_property": False, "is_staticmethod": False, "evidence": "def d_method(self): pass"},
+            ],
+            "imports": [],
+            "calls": [
+                {"caller_func": "d_method", "caller_class": "D", "callee": "self.base_method", "is_attribute": True, "line": 18, "file": "diamond.py", "evidence": "self.base_method()"}
+            ]
+        }
+    ]
+    index = SymbolIndex(parsed_files)
+    resolver = SymbolResolver(index)
+    edges = resolver.resolve_relationships(parsed_files)
+    calls = [e for e in edges if e["type"] == "CALLS"]
+    assert len(calls) == 1
+    assert calls[0]["resolution_status"] == "VERIFIED"
+    assert calls[0]["target"] == "function:diamond.py:A.base_method"
+
+
+
+def test_case_15_type_checking_guard(tmp_path):
+    """Tests parsing and resolving when imports are guarded under if TYPE_CHECKING:."""
+    from app.services.code_parser import parse_file
+    file_path = tmp_path / "type_guard.py"
+    file_path.write_text("""
+import typing
+if typing.TYPE_CHECKING:
+    from decimal import Decimal
+
+def process(val: "Decimal") -> None:
+    pass
+""", encoding="utf-8")
+    
+    res = parse_file(str(file_path), str(tmp_path))
+    assert len(res["imports"]) >= 1
+    assert any(imp.get("module") == "decimal" or imp.get("name") == "Decimal" for imp in res["imports"])
+
+
+

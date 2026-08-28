@@ -32,7 +32,7 @@ class RateLimiter:
 global_rate_limiter = RateLimiter(requests_per_minute=10)
 
 async def rate_limit_middleware(request: Request, call_next):
-    if request.url.path == "/api/analyze" and request.method == "POST":
+    if request.url.path in ("/api/analyze", "/api/v1/analyze") and request.method == "POST":
         client_ip = request.client.host if request.client else "127.0.0.1"
         allowed, retry_after = global_rate_limiter.is_allowed(client_ip)
         if not allowed:

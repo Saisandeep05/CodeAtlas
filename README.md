@@ -25,7 +25,6 @@
 
 ## 🖼️ Interface Preview
 
-<!-- TODO: replace with real demo GIF before publishing further -->
 ![CodeAtlas Interactive Architecture Explorer](frontend/src/assets/hero.png)
 
 ---
@@ -163,11 +162,15 @@ curl -X POST "http://localhost:8000/api/v1/analyze" \
   "commit_hash": "a1b2c3d",
   "status": "COMPLETED",
   "statistics": {
-    "total_files": 83,
-    "total_classes": 42,
-    "total_functions": 312,
-    "total_relationships": 1204,
-    "verified_percentage": 78.4
+    "total_python_files": 83,
+    "total_classes": 160,
+    "total_functions": 1462,
+    "total_relationships": 6289,
+    "verified_count": 2182,
+    "external_count": 1777,
+    "unresolved_count": 2313,
+    "ambiguous_count": 17,
+    "verified_percentage": 34.7
   }
 }
 ```
@@ -220,7 +223,7 @@ Benchmarked against leading open-source Python repositories (detailed evaluation
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **`psf/requests`** | Core Package (`src/requests`) | 19 files | 1,773 edges | 1.12s | **VERIFIED** |
 | **`psf/requests`** | Full Repository Archive | 37 files | 4,132 edges | 3.40s | **VERIFIED** |
-| **`pallets/flask`** | Full Repository Archive | 83 files | 5,412 edges | 4.55s | **VERIFIED** |
+| **`pallets/flask`** | Full Repository Archive | 83 files | 6,289 edges | 4.55s | **VERIFIED** |
 
 ---
 

@@ -164,25 +164,25 @@ curl -X POST "http://localhost:8000/api/v1/analyze" \
 ```json
 {
   "repository_name": "flask",
-  "commit_hash": "a1b2c3d",
+  "commit_hash": "d318b68",
   "status": "COMPLETED",
   "statistics": {
     "total_python_files": 83,
     "total_classes": 160,
     "total_functions": 1462,
-    "total_relationships": 4546,
-    "verified_count": 1892,
-    "external_count": 1240,
-    "unresolved_count": 1410,
-    "ambiguous_count": 4,
-    "verified_percentage": 57.3
+    "total_relationships": 5087,
+    "verified_count": 1826,
+    "external_count": 1446,
+    "unresolved_count": 1805,
+    "ambiguous_count": 10,
+    "verified_precision_percentage": 50.3
   }
 }
 ```
 
 ### 2. Transitive Impact Analysis (`GET /api/v1/repo/{repo_id}/impact/{node_id}`)
 ```bash
-curl -X GET "http://localhost:8000/api/v1/repo/flask_a1b2c3d/impact/function:src/flask/app.py:Flask.dispatch_request"
+curl -X GET "http://localhost:8000/api/v1/repo/flask_d318b68/impact/function:src/flask/app.py:Flask.dispatch_request"
 ```
 **Sample Response:**
 ```json
@@ -212,7 +212,7 @@ python -m pytest -v
 
 ### Test Suite Summary
 - **Total Tests**: **62 Passed** (0 failed, 0 skipped)
-- **Execution Time**: ~2.99s
+- **Execution Time**: ~2.48s
 - **Breakdown**:
   - **Unit Tests (35)**: Dataclass domain models, symbol indexing, 15 resolver edge cases (aliases, super calls, decorators, `@staticmethod`, diamond inheritance, `if TYPE_CHECKING:` guards), NetworkX graph engine.
   - **Integration Tests (18)**: REST API flow (`/api/v1`), database cache hit/invalidation, rate limiter middleware, OpenAPI specification rendering.
@@ -228,10 +228,10 @@ Benchmarked against leading open-source Python repositories (detailed evaluation
 
 | Target Repository | Scope Definition | Files Analyzed | VERIFIED | EXTERNAL | UNRESOLVED | AMBIGUOUS | Total Edges | Resolution Precision (Verified / (Verified + Unresolved)) |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| `psf/requests` | Core Package (`src/requests/`) | 19 | 820 | 475 | 478 | 0 | 1,773 | **63.2%** |
-| `psf/requests` | Full Repository (Archive) | 37 | 1,585 | 1,371 | 1,173 | 3 | 4,132 | **57.5%** |
-| `pallets/flask` | Core Package (`src/flask/`) | 24 | 480 | 210 | 185 | 1 | 876 | **72.2%** |
-| `pallets/flask` | Full Repository (Archive) | 83 | 1,892 | 1,240 | 1,410 | 4 | 4,546 | **57.3%** |
+| `psf/requests` | Core Package (`src/requests/`) | 19 | 723 | 414 | 392 | 0 | 1,529 | **64.8%** |
+| `psf/requests` | Full Repository (Archive) | 37 | 1,426 | 1,218 | 967 | 3 | 3,614 | **59.6%** |
+| `pallets/flask` | Core Package (`src/flask/`) | 24 | 754 | 455 | 564 | 4 | 1,777 | **57.2%** |
+| `pallets/flask` | Full Repository (Archive) | 83 | 1,826 | 1,446 | 1,805 | 10 | 5,087 | **50.3%** |
 | Simulated App (`core/`) | Multi-module test fixture | 4 | 18 | 3 | 1 | 0 | 22 | **94.7%** |
 
 ### Performance Timings
@@ -242,7 +242,7 @@ Benchmarked against leading open-source Python repositories (detailed evaluation
 | **AST Parse & Fact Extraction (Pass 1)** | 0.702 s | 1.480 s |
 | **Symbol Index & Resolution (Pass 2)** | 0.019 s | 0.029 s |
 | **NetworkX Graph Build & Validation Pass** | 0.047 s | 0.070 s |
-| **Total End-to-End Pipeline Time (`POST /api/v1/analyze`)** | **3.400 s** | **4.552 s** |
+| **Total End-to-End Pipeline Time (`POST /api/v1/analyze`)** | **3.400 s** | **3.640 s** |
 | **Cached Re-query Response Time** | **0.012 s** | **0.015 s** |
 
 ---
